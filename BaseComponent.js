@@ -1,8 +1,8 @@
-import Emitter from './Emitter.js';
+var Emitter = require( './Emitter.js' );
 
-import { defer } from './util';
+var defer = require( './util' ).defer;
 
-'use strict';
+"use strict";
 
 var GlobalEmitter = Emitter();
 GlobalEmitter.name = 'global';
@@ -10,10 +10,13 @@ GlobalEmitter.name = 'global';
 function BaseComponent () {
     //create local instance of emitter
     this._emitter = Emitter();
-    //this._emitter.name = this.inheritChain[this.inheritChain.length - 1] + '-local'; //for debugging with base-frame-extends
-    // base-frame-extends
+    //this._emitter.name = this.inheritChain[this.inheritChain.length - 1] + '-local'; //for debugging with
+    // base-frame-extends base-frame-extends
     this._emitter.name = 'local'; //for debugging
-    console.log( this._emitter, this );
+
+    //create container for signals
+    this.emit = {};
+
     //create slots and signals
     if( Object.prototype.toString.call( this.slots ) === '[object Function]' ) {
         this.slots = this.slots();
@@ -28,10 +31,10 @@ function BaseComponent () {
 BaseComponent.prototype = {
 
     _slots: function ( channels ) {
-        for ( let channel in channels ) {
+        for ( var channel in channels ) {
             if ( channels.hasOwnProperty( channel ) ) {
 
-                let slots = channels[ channel ];
+                var slots = channels[ channel ];
 
                 if ( typeof slots === 'function' ) {
                     slots = slots.call( {} );
@@ -41,18 +44,18 @@ BaseComponent.prototype = {
                     throw new Error( "Slots must be (or return from func) hash object" );
                 }
 
-                let emitter = channel === 'global' ? this._globalEmitter : this._emitter;
+                var emitter = channel === 'global' ? this._globalEmitter : this._emitter;
 
-                for ( let slot in slots ) {
+                for ( var slot in slots ) {
                     if ( slots.hasOwnProperty( slot ) ) {
-                        let _arr = slot.split( '@' );
+                        var _arr = slot.split( '@' );
                         if ( _arr.length > 2 ) {
                             throw new Error( "Incorrect name of slot" );
                         }
-                        let method = _arr[ 0 ];
-                        let event = _arr[ 1 ];
+                        var method = _arr[ 0 ];
+                        var event = _arr[ 1 ];
 
-                        let promise;
+                        var promise;
 
                         switch ( method ) {
                             case 'on':
@@ -80,10 +83,10 @@ BaseComponent.prototype = {
     },
 
     _signals: function ( channels ) {
-        for ( let channel in channels ) {
+        for ( var channel in channels ) {
             if ( channels.hasOwnProperty( channel ) ) {
 
-                let signals = channels[ channel ];
+                var signals = channels[ channel ];
 
                 if ( typeof signals === 'function' ) {
                     signals = signals.call( {} );
@@ -93,20 +96,20 @@ BaseComponent.prototype = {
                     throw new Error( "Signals must be (or return from func) hash object" );
                 }
 
-                let emitter = channel === 'global' ? this._globalEmitter : this._emitter;
+                var emitter = channel === 'global' ? this._globalEmitter : this._emitter;
 
-                for ( let signal in signals ) {
+                for ( var signal in signals ) {
                     if ( signals.hasOwnProperty( signal ) ) {
-                        let _arr = signal.split( '@' );
+                        var _arr = signal.split( '@' );
                         if ( _arr.length > 2 ) {
                             throw new Error( "Incorrect name of signal" );
                         }
 
-                        let method = _arr[ 0 ];
-                        let event = _arr[ 1 ];
+                        var method = _arr[ 0 ];
+                        var event = _arr[ 1 ];
 
                         this.emit[ signals[ signal ] ] = function ( data, obj ) {
-                            let _event;
+                            var _event;
                             if ( obj ) {
                                 _event = event.replace( /\{([^\}]+)\}/g, function ( i, f ) {
                                     return obj[ f ];
@@ -131,4 +134,4 @@ BaseComponent.prototype = {
 
 };
 
-export default BaseComponent;
+module.exports = BaseComponent;

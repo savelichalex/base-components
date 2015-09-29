@@ -1,9 +1,9 @@
-import FastEmitter from 'fastemitter-with-context';
-import Promise from 'bluebird';
+var FastEmitter = require( 'fastemitter-with-context' );
+var Promise = require( 'bluebird' );
 
 "use strict";
 
-export default function() {
+module.exports = function () {
     var emitter, emitterProxy;
 
     emitter = new FastEmitter();
@@ -17,7 +17,7 @@ export default function() {
                 promise = new Promise(function (resolve) {
                     resolve(data);
                 });
-                let self = this;
+                var self = this;
                 queue.forEach(function (obj) {
                     promise = promise.bind(self).then(obj.onResolve, obj.onReject);
                 })
@@ -55,7 +55,7 @@ export default function() {
         },
 
         _commandFrom: function (event, context) {
-            let promise = this.on(event + ':up', context);
+            var promise = this.on( event + ':up', context );
             return {
                 then: function (onResolve, onReject) {
                     promise = promise.then(onResolve, onReject);
@@ -84,7 +84,7 @@ export default function() {
             emitterProxy
                 .once(event + ':uniqueAfter')
                 .then(function () {
-                    let promise = self._commandTo(event + ':' + id++, data);
+                    var promise = self._commandTo( event + ':' + id++, data );
                     queue.forEach(function (obj) {
                         promise = promise.then(obj.onResolve, obj.onReject);
                     });
@@ -103,7 +103,7 @@ export default function() {
             var queue = [];
             this.on(event + ':uniqueBefore', context)
                 .then(function (id) {
-                    let promise = emitterProxy.once(event + ':' + id + ':up', context);
+                    var promise = emitterProxy.once( event + ':' + id + ':up', context );
                     emitterProxy.trigger(event + ':uniqueAfter');
                     queue.forEach(function (obj) {
                         promise = promise.bind(context).then(obj.onResolve, obj.onReject);
