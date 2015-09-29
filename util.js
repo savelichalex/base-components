@@ -1,4 +1,6 @@
-export function defer(onFulfill, onReject) {
+"use strict";
+
+module.exports.defer = function ( onFulfill, onReject ) {
     return {
         _queue: [{
             onFulfill: onFulfill,
@@ -13,4 +15,4 @@ export function defer(onFulfill, onReject) {
             return this;
         }
     }
-}
+};

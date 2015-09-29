@@ -1,33 +1,31 @@
 {
-  "name": "base-frame-component",
-  "version": "0.1.0",
-  "description": "Base component for create loose-coupling architecture",
-  "main": "index.js",
-  "scripts": {
-    "test": "mocha --compilers js:babel-core/register tests/test.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/savelichalex/base-frame-component.git"
-  },
-  "author": {
-    "name": "Alexey Savelyev"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/savelichalex/base-frame-components/issues"
-  },
-  "homepage": "https://github.com/savelichalex/base-frame-components#readme",
-  "dependencies": {
-    "bluebird": "2.9.*",
-    "fastemitter-with-context": "~0.0.6"
-  },
-  "devDependencies": {
-    "babel-core": "5.8.*",
-    "babel-loader": "5.3.*",
-    "babelify": "^6.3.0",
-    "mocha": "2.3.*",
-    "webpack": "1.10.*"
-  },
-  "readmeFilename": "README.md"
+    "name": "base-components",
+    "version": "0.1.0",
+    "description": "Base component for create loose-coupling architecture",
+    "main": "index.js",
+    "scripts": {
+        "test": "mocha tests/test.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/savelichalex/base-components.git"
+    },
+    "author": {
+        "name": "Alexey Savelyev"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/savelichalex/base-components/issues"
+    },
+    "homepage": "https://github.com/savelichalex/base-components#readme",
+    "dependencies": {
+        "bluebird": "2.9.*",
+        "fastemitter-with-context": "*"
+    },
+    "devDependencies": {
+        "mocha": "2.3.*",
+        "chai": "*",
+        "base-extends": "*"
+    },
+    "readmeFilename": "README.md"
 }
