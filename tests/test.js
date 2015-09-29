@@ -1,6 +1,6 @@
 var BaseComponent = require( '../index' ).BaseComponent;
 var chai = require( 'chai' );
-require( 'base-frame-extends' );
+require( 'base-extends' );
 
 var assert = chai.assert;
 var should = chai.should;

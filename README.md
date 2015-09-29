@@ -1,4 +1,6 @@
-# Base-frame-component [![npm version](https://badge.fury.io/js/base-components.svg)](http://badge.fury.io/js/base-components)
+# Base-components
+[![Build Status](https://travis-ci.org/savelichalex/base-components.svg?branch=master)](https://travis-ci.org/savelichalex/base-components)
+[![npm version](https://badge.fury.io/js/base-components.svg)](http://badge.fury.io/js/base-components)
 
 This is main part of base-frame library that help you to create loose-coupling component architecture
 
