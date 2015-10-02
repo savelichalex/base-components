@@ -7,6 +7,12 @@ var defer = require( './util' ).defer;
 var GlobalEmitter = Emitter();
 GlobalEmitter.name = 'global';
 
+/**
+ * Base class to create component.
+ * Create signals and slots.
+ * For use it you must extend it.
+ * @constructor
+ */
 function BaseComponent () {
     //create local instance of emitter
     this._emitter = Emitter();
@@ -30,6 +36,11 @@ function BaseComponent () {
 
 BaseComponent.prototype = {
 
+    /**
+     * Method to create slots
+     * @param channels {Object}
+     * @private
+     */
     _slots: function ( channels ) {
         for ( var channel in channels ) {
             if ( channels.hasOwnProperty( channel ) ) {
@@ -82,6 +93,11 @@ BaseComponent.prototype = {
         }
     },
 
+    /**
+     * Method to create signals
+     * @param channels
+     * @private
+     */
     _signals: function ( channels ) {
         for ( var channel in channels ) {
             if ( channels.hasOwnProperty( channel ) ) {
