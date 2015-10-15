@@ -1,6 +1,8 @@
 var Emitter = require( './Emitter.js' );
+var csp = require( 'js-csp' );
 
 var defer = require( './util' ).defer;
+var isGenFunc = require( './util' ).isGeneratorFunc;
 
 "use strict";
 
@@ -35,6 +37,7 @@ function BaseComponent () {
 }
 
 BaseComponent.prototype = {
+    constructor: BaseComponent,
 
     /**
      * Method to create slots
@@ -55,7 +58,7 @@ BaseComponent.prototype = {
                     throw new Error( "Slots must be (or return from func) hash object" );
                 }
 
-                var emitter = channel === 'global' ? this._globalEmitter : this._emitter;
+                var emitter = channel === 'global' ? GlobalEmitter : this._emitter;
 
                 for ( var slot in slots ) {
                     if ( slots.hasOwnProperty( slot ) ) {
@@ -76,12 +79,31 @@ BaseComponent.prototype = {
                                 promise = emitter.once( event, this );
                                 break;
                             case 'command':
-                                promise = emitter.commandFrom( event, this );
+                                if( !isGenFunc( slots[ slot ] ) ) {
+                                    throw new Error( 'If you want to use command then function must be a generator!' );
+                                }
+                                emitter.commandFrom( event, slots[ slot ], this );
                                 break;
                         }
 
                         if ( Object.prototype.toString.call( slots[ slot ] ) === '[object Function]' ) {
-                            slots[ slot ] = defer( slots[ slot ] );
+                            if( !isGenFunc( slots[ slot ] ) ) {
+                                slots[ slot ] = defer( slots[ slot ] );
+                            } else {
+                                if( promise ) {
+                                    var ch = csp.chan();
+
+                                    var gen = slots[ slot ].call( this, ch );
+
+                                    promise.then( function ( value ) {
+                                        csp.putAsync( ch, value );
+                                    } );
+
+                                    return csp.spawn( gen, slots[ slot ] );
+                                } else {
+                                    return;
+                                }
+                            }
                         }
 
                         slots[ slot ]._queue.forEach( function ( cb ) {
@@ -112,7 +134,7 @@ BaseComponent.prototype = {
                     throw new Error( "Signals must be (or return from func) hash object" );
                 }
 
-                var emitter = channel === 'global' ? this._globalEmitter : this._emitter;
+                var emitter = channel === 'global' ? GlobalEmitter : this._emitter;
 
                 for ( var signal in signals ) {
                     if ( signals.hasOwnProperty( signal ) ) {
@@ -124,24 +146,27 @@ BaseComponent.prototype = {
                         var method = _arr[ 0 ];
                         var event = _arr[ 1 ];
 
-                        this.emit[ signals[ signal ] ] = function ( data, obj ) {
-                            var _event;
-                            if ( obj ) {
-                                _event = event.replace( /\{([^\}]+)\}/g, function ( i, f ) {
-                                    return obj[ f ];
-                                } );
-                            } else {
-                                _event = event;
+                        this.emit[ signals[ signal ] ] = (function( event, method, emitter ) {
+                            return function ( data, obj ) {
+                                var _event;
+                                if( obj ) {
+                                    _event = event.replace( /\{([^\}]+)\}/g, function ( i, f ) {
+                                        return obj[ f ];
+                                    } );
+                                } else {
+                                    _event = event;
+                                }
+
+                                switch( method ) {
+                                    case 'trigger':
+                                        emitter.trigger( _event, data );
+                                        break;
+                                    case 'command':
+                                        return emitter.commandTo( _event, data );
+                                        break;
+                                }
                             }
-                            switch ( method ) {
-                                case 'trigger':
-                                    emitter.trigger( _event, data );
-                                    break;
-                                case 'command':
-                                    return emitter.commandTo( _event, data );
-                                    break;
-                            }
-                        };
+                        })( event, method, emitter );
                     }
                 }
             }
