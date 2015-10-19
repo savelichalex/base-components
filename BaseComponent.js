@@ -79,10 +79,13 @@ BaseComponent.prototype = {
                                 promise = emitter.once( event, this );
                                 break;
                             case 'command':
+                                promise = emitter.commandFrom( event, this );
+                                break;
+                            case 'request':
                                 if( !isGenFunc( slots[ slot ] ) ) {
                                     throw new Error( 'If you want to use command then function must be a generator!' );
                                 }
-                                emitter.commandFrom( event, slots[ slot ], this );
+                                emitter.requestFrom( event, slots[ slot ], this );
                                 break;
                         }
 
@@ -163,6 +166,9 @@ BaseComponent.prototype = {
                                         break;
                                     case 'command':
                                         return emitter.commandTo( _event, data );
+                                        break;
+                                    case 'request':
+                                        return emitter.requestTo( _event, data );
                                         break;
                                 }
                             }

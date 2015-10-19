@@ -5,9 +5,9 @@ var expect = chai.expect;
 
 var csp = require( 'js-csp' );
 
-describe( 'Commands through csp', function () {
+describe( 'Request through csp', function () {
     it( 'should create new channel and send it', function ( done ) {
-        Emitter.commandFrom( 'testEvent', function* ( ch, data ) {
+        Emitter.requestFrom( 'testEvent', function* ( ch, data ) {
             expect( ch ).to.exist;
             expect( data ).to.exist;
             yield csp.put( ch, data );
@@ -15,7 +15,7 @@ describe( 'Commands through csp', function () {
 
         csp.go(function* () {
             var testData = 'test data';
-            var val = yield Emitter.commandTo( 'testEvent', testData );
+            var val = yield Emitter.requestTo( 'testEvent', testData );
             expect( val ).to.exist;
             expect( val ).to.be.equal( testData );
             done();

@@ -141,7 +141,7 @@ describe('BaseComponent', function () {
             test._emitter.trigger( 'test', 'pass' )
         } );
 
-        it( 'should do command', function ( done ) {
+        it( 'should do request', function ( done ) {
             "use strict";
 
             var testData = 'test data';
@@ -154,7 +154,7 @@ describe('BaseComponent', function () {
                 signals() {
                     return {
                         global: {
-                            'command@testCommand': 'testCommand'
+                            'request@testCommand': 'testCommand'
                         },
                         local: {
                             'trigger@startTest': 'startTest'
@@ -193,7 +193,7 @@ describe('BaseComponent', function () {
                 slots() {
                     return {
                         global: {
-                            'command@testCommand': function* ( ch, data ) {
+                            'request@testCommand': function* ( ch, data ) {
                                 expect( ch ).to.exist;
                                 expect( data ).to.exist;
                                 expect( data ).to.be.equal( testData );
