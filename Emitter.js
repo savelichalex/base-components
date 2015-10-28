@@ -18,10 +18,9 @@ module.exports = function () {
                 promise = new Promise(function (resolve) {
                     resolve(data);
                 });
-                var self = this;
                 queue.forEach(function (obj) {
-                    promise = promise.bind(self).then(obj.onResolve, obj.onReject);
-                })
+                    promise = promise.bind(this).then(obj.onResolve, obj.onReject);
+                }, this)
             }, context);
             return {
                 then: function (onResolve, onReject) {
@@ -31,10 +30,6 @@ module.exports = function () {
                     });
                 }
             }
-        },
-
-        off: function (event) {
-            emitter.off(event);
         },
 
         trigger: function (event, data) {
@@ -50,7 +45,9 @@ module.exports = function () {
             });
         },
 
-
+		removeAll: function ( type ) {
+			return emitter.removeAllListeners( type );
+		},
 
         _commandTo: function (event, data) {
             this.trigger(event + ':up', data);
@@ -141,6 +138,8 @@ module.exports = function () {
         },
 
         Promise: Promise,
+
+	    emitter: emitter
     };
 
     return emitterProxy;

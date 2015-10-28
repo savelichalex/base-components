@@ -25,6 +25,10 @@ function BaseComponent () {
     //create container for signals
     this.emit = {};
 
+	//object to save links to events and channels
+	this.__slots = {};
+	this.__signals = {};
+
     //create slots and signals
     if( Object.prototype.toString.call( this.slots ) === '[object Function]' ) {
         this.slots = this.slots();
@@ -51,7 +55,7 @@ BaseComponent.prototype = {
                 var slots = channels[ channel ];
 
                 if ( typeof slots === 'function' ) {
-                    slots = slots.call( {} );
+                    slots = slots.call( this );
                 }
 
                 if ( Object.prototype.toString.call( slots ) !== '[object Object]' ) {
@@ -68,6 +72,12 @@ BaseComponent.prototype = {
                         }
                         var method = _arr[ 0 ];
                         var event = _arr[ 1 ];
+
+	                    this.__slots[ event ] = {
+		                    emitter: emitter,
+		                    method: method,
+		                    channel: void 0
+	                    };
 
                         var promise;
 
@@ -96,15 +106,18 @@ BaseComponent.prototype = {
                                 if( promise ) {
                                     var ch = csp.chan();
 
+	                                this.__slots[ event ].channel = ch;
+
                                     var gen = slots[ slot ].call( this, ch );
 
                                     promise.then( function ( value ) {
                                         csp.putAsync( ch, value );
                                     } );
 
-                                    return csp.spawn( gen, slots[ slot ] );
+                                    csp.spawn( gen, slots[ slot ] );
+	                                break;
                                 } else {
-                                    return;
+                                    break;
                                 }
                             }
                         }
@@ -149,6 +162,10 @@ BaseComponent.prototype = {
                         var method = _arr[ 0 ];
                         var event = _arr[ 1 ];
 
+	                    this.__signals[ event ] = {
+							method: method
+	                    };
+
                         this.emit[ signals[ signal ] ] = (function( event, method, emitter ) {
                             return function ( data, obj ) {
                                 var _event;
@@ -177,7 +194,21 @@ BaseComponent.prototype = {
                 }
             }
         }
-    }
+    },
+
+	/**
+	 * Method to unsubscribe all events and to close channels
+	 */
+	destroy: function () {
+		var slots = Object.keys( this.__slots );
+		slots.forEach( function ( event ) {
+			var slot = this.__slots[ event ];
+			slot.emitter.removeAll( event );
+			if( slot.channel ) {
+				//slot.channel.close();
+			}
+		}, this );
+	}
 
 };
 
