@@ -1,5 +1,4 @@
 var Emitter = require( './Emitter.js' );
-var csp = require( 'js-csp' );
 
 var defer = require( './util' ).defer;
 var isGenFunc = require( './util' ).isGeneratorFunc;
@@ -91,35 +90,10 @@ BaseComponent.prototype = {
                             case 'command':
                                 promise = emitter.commandFrom( event, this );
                                 break;
-                            case 'request':
-                                if( !isGenFunc( slots[ slot ] ) ) {
-                                    throw new Error( 'If you want to use command then function must be a generator!' );
-                                }
-                                emitter.requestFrom( event, slots[ slot ], this );
-                                break;
                         }
 
                         if ( Object.prototype.toString.call( slots[ slot ] ) === '[object Function]' ) {
-                            if( !isGenFunc( slots[ slot ] ) ) {
-                                slots[ slot ] = defer( slots[ slot ] );
-                            } else {
-                                if( promise ) {
-                                    var ch = csp.chan();
-
-	                                this.__slots[ event ].channel = ch;
-
-                                    var gen = slots[ slot ].call( this, ch );
-
-                                    promise.then( function ( value ) {
-                                        csp.putAsync( ch, value );
-                                    } );
-
-                                    csp.spawn( gen, slots[ slot ] );
-	                                break;
-                                } else {
-                                    break;
-                                }
-                            }
+	                        slots[ slot ] = defer( slots[ slot ] );
                         }
 
                         slots[ slot ]._queue.forEach( function ( cb ) {

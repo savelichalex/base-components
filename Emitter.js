@@ -1,6 +1,5 @@
 var FastEmitter = require( 'fastemitter-with-context' );
 var Promise = require( 'bluebird' );
-var csp = require( 'js-csp' );
 
 "use strict";
 
@@ -121,20 +120,6 @@ module.exports = function () {
                     return this;
                 }
             };
-        },
-
-        requestTo: function (event, data) {
-            var commandChannel = csp.chan(csp.buffers.fixed(1));
-
-            this.trigger( event, [commandChannel, data] );
-
-            return commandChannel;
-        },
-
-        requestFrom: function (event, gen, context) {
-            this.on( event, context ).then( function ( chAndData ) {
-                csp.go( gen, chAndData );
-            } );
         },
 
         Promise: Promise,

@@ -1,7 +1,6 @@
 var BaseComponent = require( '../index' ).BaseComponent;
 var chai = require( 'chai' );
 require( 'base-extends' );
-var csp = require( 'js-csp' );
 
 var assert = chai.assert;
 var should = chai.should;
@@ -139,77 +138,6 @@ describe('BaseComponent', function () {
             var test = new TestComponent();
 
             test._emitter.trigger( 'test', 'pass' )
-        } );
-
-        it( 'should do request', function ( done ) {
-            "use strict";
-
-            var testData = 'test data';
-
-            class TestComponent1 extends BaseComponent {
-                constructor() {
-                    super();
-                }
-
-                signals() {
-                    return {
-                        global: {
-                            'request@testCommand': 'testCommand'
-                        },
-                        local: {
-                            'trigger@startTest': 'startTest'
-                        }
-                    }
-                }
-
-                slots() {
-                    return {
-                        local: {
-                            'on@startTest': function* ( ch ) {
-                                expect( ch ).to.exist;
-                                var data;
-                                var i = 0;
-
-                                while( i < 3 && ( ( data = yield ch ) !== csp.CLOSED ) ) {
-                                    expect( data ).to.exist;
-                                    expect( data ).to.be.equal( testData );
-                                    var val = yield this.emit.testCommand( data );
-                                    expect( val ).to.exist;
-                                    expect( val ).to.be.equal( testData + ' command' );
-                                    i = i + 1;
-                                }
-                                done();
-                            }
-                        }
-                    }
-                }
-            }
-
-            class TestComponent2 extends BaseComponent {
-                constructor() {
-                    super();
-                }
-
-                slots() {
-                    return {
-                        global: {
-                            'request@testCommand': function* ( ch, data ) {
-                                expect( ch ).to.exist;
-                                expect( data ).to.exist;
-                                expect( data ).to.be.equal( testData );
-                                yield csp.put( ch, data + ' command' );
-                            }
-                        }
-                    }
-                }
-            }
-
-            var tc1 = new TestComponent1();
-            var tc2 = new TestComponent2();
-
-            tc1.emit.startTest( testData );
-            tc1.emit.startTest( testData );
-            tc1.emit.startTest( testData );
         } );
     } );
 });
