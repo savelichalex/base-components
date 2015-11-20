@@ -14,7 +14,8 @@ GlobalEmitter.name = 'global';
  * For use it you must extend it.
  * @constructor
  */
-function BaseComponent () {
+function BaseComponent ( emitter ) {
+	this._globalEmitter = emitter || GlobalEmitter;
     //create local instance of emitter
     this._emitter = Emitter();
     //this._emitter.name = this.inheritChain[this.inheritChain.length - 1] + '-local'; //for debugging with
@@ -61,7 +62,7 @@ BaseComponent.prototype = {
                     throw new Error( "Slots must be (or return from func) hash object" );
                 }
 
-                var emitter = channel === 'global' ? GlobalEmitter : this._emitter;
+                var emitter = channel === 'global' ? this._globalEmitter : this._emitter;
 
                 for ( var slot in slots ) {
                     if ( slots.hasOwnProperty( slot ) ) {
@@ -124,7 +125,7 @@ BaseComponent.prototype = {
                     throw new Error( "Signals must be (or return from func) hash object" );
                 }
 
-                var emitter = channel === 'global' ? GlobalEmitter : this._emitter;
+                var emitter = channel === 'global' ? this._globalEmitter : this._emitter;
 
                 for ( var signal in signals ) {
                     if ( signals.hasOwnProperty( signal ) ) {
@@ -157,9 +158,6 @@ BaseComponent.prototype = {
                                         break;
                                     case 'command':
                                         return emitter.commandTo( _event, data );
-                                        break;
-                                    case 'request':
-                                        return emitter.requestTo( _event, data );
                                         break;
                                 }
                             }
