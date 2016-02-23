@@ -10,7 +10,6 @@ const BaseComponent = index.BaseComponent;
 describe('BaseComponent', function () {
 	describe('signals and slots', function () {
 		it('should have signals', function (done) {
-			console.log(BaseComponent);
 			class TestComponent extends BaseComponent {
 				signals() {
 					return {
