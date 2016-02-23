@@ -1,23 +1,23 @@
-function Signal() {}
+'use strict';
 
-Signal.on = function( signal ) {
-	return 'on@' + signal;
-};
+export class Signal {
+	static on(signal) {
+		return 'on@' + signal;
+	}
 
-Signal.once = function( signal ) {
-	return 'once@' + signal;
-};
+	static once(signal) {
+		return 'once@' + signal;
+	}
 
-Signal.trigger = function( signal ) {
-	return 'trigger@' + signal;
-};
+	static trigger(signal) {
+		return 'trigger@' + signal;
+	}
 
-Signal.command = function( signal ) {
-	return 'command@' + signal;
-};
+	static command(signal) {
+		return 'command@' + signal;
+	}
 
-Signal.request = function( signal ) {
-	return 'request@' + signal;
-};
-
-module.exports = Signal;
+	static request(signal) {
+		return 'request@' + signal;
+	}
+}
