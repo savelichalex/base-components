@@ -21,7 +21,7 @@ var config = {
 		path: __dirname + '/build',
 		filename: outputFile,
 		library: libraryName,
-		libraryTarget: 'umd',
+		libraryTarget: 'commonjs2',
 		umdNamedDefine: true
 	},
 	module: {
@@ -29,7 +29,10 @@ var config = {
 			{
 				test: /(\.jsx|\.js)$/,
 				loader: 'babel',
-				exclude: /(node_modules)/
+				include: [
+					path.resolve(__dirname, 'src'),
+					path.resolve(__dirname, '../eventStream')
+				]
 			}
 		]
 	},
@@ -37,7 +40,10 @@ var config = {
 		root: path.resolve('./src'),
 		extensions: ['', '.js']
 	},
-	plugins: plugins
+	plugins: plugins,
+	node: {
+		global: false
+	}
 };
 
 module.exports = config;
