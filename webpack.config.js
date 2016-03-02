@@ -31,7 +31,6 @@ var config = {
 				loader: 'babel',
 				include: [
 					path.resolve(__dirname, 'src'),
-					path.resolve(__dirname, '../eventStream')
 				]
 			}
 		]
