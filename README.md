@@ -10,9 +10,14 @@ Component is independent part of your application. Each component work in isolat
 But components need to communicate with each other, for example to notify of a change of status or
 requesting data from another component.
 
-For this components implement idea of slots and signals ( like in Qt ). This technique help you create
+For this components implement idea of slots and signals. This technique help you create
 readable interfaces between components. Just looking at component you see which entry and output point they
 have.
 
-Main idea of components is that they encapsulate what they do. No one part of application can not to communicate.
-All communications must be only through components in which they are located.
+Main idea of components is that they encapsulate what they do. No one part of application can not to communicate without
+events
+
+## More comfortable work with signals and slots
+
+After some time with library I saw that work with every descrete event is not a good idea. And I choose FRP technique to
+work with them. Every slots and signals is streams under component, and this way what I was looking for a long time...
