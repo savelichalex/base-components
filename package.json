@@ -1,12 +1,12 @@
 {
   "name": "base-components",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "description": "Base component for create loose-coupling architecture",
   "main": "build/base-components.js",
   "scripts": {
     "test": "mocha --require babel-core/register tests/*.js",
     "build": "webpack --mode=build",
-    "dev": "webpack --progress --colors --watch --mode=dev"
+    "dev": "webpack --progress --colors --mode=dev"
   },
   "repository": {
     "type": "git",
@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/savelichalex/base-components#readme",
   "dependencies": {
-    "bluebird": "2.9.*",
-    "fastemitter-with-context": "*"
+    "event-streams": "^0.2.0",
+    "fastemitter": "0.0.5-0"
   },
   "devDependencies": {
     "babel": "^6.5.2",
