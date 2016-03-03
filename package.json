@@ -1,8 +1,8 @@
 {
   "name": "base-components",
-  "version": "0.1.10",
+  "version": "0.1.12",
   "description": "Base component for create loose-coupling architecture",
-  "main": "src/index.js",
+  "main": "build/base-components.min.js",
   "scripts": {
     "test": "mocha --require babel-core/register tests/*.js",
     "build": "webpack --mode=build",

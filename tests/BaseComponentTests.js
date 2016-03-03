@@ -1,11 +1,10 @@
 'use strict';
 
-import index from '../src/index';
+import {BaseComponent} from '../build/base-components.min';
 import chai from 'chai';
 
 var should = chai.should;
 var expect = chai.expect;
-const BaseComponent = index.BaseComponent;
 
 describe('BaseComponent', function () {
 	describe('signals and slots', function () {

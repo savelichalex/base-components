@@ -21,8 +21,7 @@ var config = {
 		path: __dirname + '/build',
 		filename: outputFile,
 		library: libraryName,
-		libraryTarget: 'umd',
-		umdNamedDefine: true
+		libraryTarget: 'commonjs2'
 	},
 	module: {
 		loaders: [
@@ -37,7 +36,10 @@ var config = {
 		root: path.resolve('./src'),
 		extensions: ['', '.js']
 	},
-	plugins: plugins
+	plugins: plugins,
+	node: {
+		global: false
+	}
 };
 
 module.exports = config;
